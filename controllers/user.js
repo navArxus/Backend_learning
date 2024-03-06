@@ -4,12 +4,13 @@ const { setUser } = require("../services/auth")
 
 const handleSignup = async (req, res) => {
     console.log(req.body)
-    const { email, name, password } = req.body;
+    const { email, name, password ,role } = req.body;
     if (email && name && password) {
         const user = await userModal.create({
             email,
             name,
-            password
+            password,
+            role
         })
         req.user = user
         const token = setUser(user);

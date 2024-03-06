@@ -14,7 +14,7 @@ async function handleGenrateUrl(req, res) {
             ShortId: shortID,
             RedirectUrl: body.url,
             VisitHistory: [],
-            createdBy:req.user?._id || null
+            createdBy:req.user?._id 
         })
         res.status(200).json({
             message: "OKay recives successfully ",

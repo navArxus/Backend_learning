@@ -7,8 +7,10 @@ const redirectCont = require("./Routes/index")
 const PORT = 8000;
 const cookieParser = require("cookie-parser")
 
+require("dotenv").config()
+
 // Middlewares
-const authUser = require("./middlewares/auth") 
+const {authUser,authUserRole} = require("./middlewares/auth") 
 
 
 app.set( "view engine", "ejs");
@@ -16,12 +18,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 app.use(cookieParser());
 
-connexttoMOngo("mongodb://127.0.0.1:27017/short-url2").then(() => {
+console.log()
+connexttoMOngo(process.env.DATA_BASE_URL).then(() => {
     console.log( "Connected to MongoDB" )
-})
+}).catch(err => {
+    console.log("Error in connection : ",err)
+}) 
 
 
-app.use("/url",authUser,urlRoutes)
+app.use("/url",authUser,authUserRole(["ADMIN"]),urlRoutes)
 app.use("/user",userRoutes)
 app.use("/",redirectCont)
 

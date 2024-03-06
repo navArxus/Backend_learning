@@ -1,17 +1,22 @@
 
 const { getUser } = require("../services/auth")
-
+const authUserRole = (roles = []) => {
+    return async (req, res, next) => {
+        console.log(req.user);
+        if (req.user.role.includes(roles)) {
+            next();
+        } else {
+            res.status(403).send({ error: 'You do not have permission to access this resource.' });
+        }
+    }
+}
 const authUser = (req, res, next) => {
     // let token = req.cookies?.token
-    let token
-    token = req.headers['authorization']
-    console.log(token)
-    console.log(req.headers)
-    console.log(token)
+    const token = req.headers['authorization'].split(" ")[1]
+
     if (token) {
-        console.log("i am in ")
         const isValid = getUser(token)
-        console.log(`isvalid ${isValid}`)
+        req.user = isValid.user
         if (isValid) {
             return next()
         }
@@ -23,4 +28,4 @@ const authUser = (req, res, next) => {
     }
 }
 
-module.exports = authUser
+module.exports = {authUser,authUserRole}
